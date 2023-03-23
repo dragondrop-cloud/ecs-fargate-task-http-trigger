@@ -1,0 +1,44 @@
+name: driftmitigation engine continuous deployment (CD)
+on:
+  push:
+    branches:
+      - dev
+      - prod
+    paths:
+      - driftmitigation/**
+
+jobs:
+  go-binary-to-aws-elastic-container-repository:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - id: uppercase_env
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ github.ref_name }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: "arn:aws:iam::${{ secrets[format('ACCOUNT_ID_{0}', steps.uppercase_env.outputs.uppercase)] }}:role/${{ secrets.AWS_ROLE_NAME }}"
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: "ecs-fargate-task-lambda-trigger-${{ github.ref_name }}"
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY:latest
