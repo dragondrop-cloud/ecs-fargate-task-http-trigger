@@ -13,10 +13,6 @@ BUCKET_ROOT = "dragondrop-ecs-fargate-task-lambda-trigger"
 if __name__ == "__main__":
     print("Beginning job to zip modules and upload modules to GCS storage.")
 
-    # Read in config around versions of the modules to deploy
-    with open(f"{os.getcwd()}/infrastructure/modules/config/versions.yml", "r") as config_file:
-         config = yaml.safe_load(config_file)
-
     # Create the S3 client
     boto_session = boto3.Session()
     s3_client = boto_session.client('s3')
