@@ -32,7 +32,7 @@ jobs:
           string: ${{ github.ref_name }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: "arn:aws:iam::${{ secrets[format('ACCOUNT_ID_{0}', steps.uppercase_env.outputs.uppercase)] }}:role/${{ secrets.AWS_ROLE_NAME }}"
           aws-region: ${{ secrets.AWS_REGION }}
