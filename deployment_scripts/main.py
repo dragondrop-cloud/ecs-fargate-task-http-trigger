@@ -23,5 +23,9 @@ if __name__ == "__main__":
     print(f"Done zipping lambda code.")
 
     print(f"Uploading lambda zip to S3.")
-    s3_client.upload_file(f"{zip_output_name}.zip", f"{BUCKET_ROOT}-{os.getenv('ENV')}", ".zip")
+    s3_client.upload_file(
+        f"{zip_output_name}.zip",
+        f"{BUCKET_ROOT}-{os.getenv('ENV')}",
+        "dragondrop_https_trigger_lambda.zip"
+    )
     print(f"Done uploading lambda zip to S3.")
