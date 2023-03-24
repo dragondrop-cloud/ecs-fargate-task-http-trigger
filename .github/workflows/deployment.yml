@@ -6,7 +6,7 @@ on:
       - prod
 
 jobs:
-  zip-tf-modules-and-send-to-gcs-and-s3:
+  zip-tf-modules-and-send-to-s3:
     runs-on: ubuntu-latest
     container: python:3.10.1-slim-buster
     timeout-minutes: 3
