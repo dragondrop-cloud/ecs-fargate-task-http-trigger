@@ -5,42 +5,45 @@ from typing import List
 
 def handler(event, _):
     """Handle lambda event and trigger the execution of the Fargate task."""
-    session = boto3.Session()
+    try:
+        session = boto3.Session()
 
-    client = session.client('ecs')
+        client = session.client('ecs')
 
-    env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(event=event)
+        env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(event=event)
 
-    print(
-        f"Environment variable override:\n{env_override_list_of_dicts}\n"
-    )
+        print(
+            f"Environment variable override:\n{env_override_list_of_dicts}\n"
+        )
 
-    response = client.run_task(
-        cluster=os.getenv("ECS_CLUSTER_ARN"),
-        networkConfiguration={
-            'awsvpcConfiguration': {
-                'subnets': [
-                    os.getenv("SUBNET")
+        response = client.run_task(
+            cluster=os.getenv("ECS_CLUSTER_ARN"),
+            networkConfiguration={
+                'awsvpcConfiguration': {
+                    'subnets': [
+                        os.getenv("SUBNET")
+                    ],
+                    'securityGroups': [
+                        os.getenv("SECURITY_GROUP"),
+                    ],
+                    'assignPublicIp': 'ENABLED'
+                }
+            },
+            startedBy="dragondrop-lambda-https-trigger",
+            taskDefinition=os.getenv("TASK_DEFINITION"),
+            overrides={
+                'containerOverrides': [
+                    {
+                        "name": os.getenv("CONTAINER_NAME"),
+                        'environment': env_override_list_of_dicts,
+                    },
                 ],
-                'securityGroups': [
-                    os.getenv("SECURITY_GROUP"),
-                ],
-                'assignPublicIp': 'ENABLED'
-            }
-        },
-        startedBy="dragondrop-lambda-https-trigger",
-        taskDefinition=os.getenv("TASK_DEFINITION"),
-        overrides={
-            'containerOverrides': [
-                {
-                    "name": os.getenv("CONTAINER_NAME"),
-                    'environment': env_override_list_of_dicts,
-                },
-            ],
-        },
-    )
+            },
+        )
 
-    print(f"Response from ECS invocation:\n{response}\n")
+        print(f"Response from ECS invocation:\n{response}\n")
+    except Exception as e:
+        print(f"Exception: {e}")
 
 
 def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
