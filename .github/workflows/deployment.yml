@@ -4,6 +4,8 @@ on:
     branches:
       - dev
       - prod
+    paths:
+       - src/**
 
 jobs:
   zip-tf-modules-and-send-to-s3:
