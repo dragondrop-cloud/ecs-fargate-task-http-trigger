@@ -4,7 +4,6 @@ public bucket hosting our Lambda Zips.
 """
 import os
 import shutil
-import yaml
 import boto3
 
 BUCKET_ROOT = "dragondrop-ecs-fargate-task-lambda-trigger"

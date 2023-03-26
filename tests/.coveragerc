@@ -1,0 +1,5 @@
+[run]
+omit =
+    deployment_scripts/*
+    tests/*
+    */__init__.py
