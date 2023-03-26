@@ -3,7 +3,7 @@ import boto3
 from typing import List
 
 
-def handler(event):
+def handler(event, _):
     """Handle lambda event and trigger the execution of the Fargate task."""
     session = boto3.Session()
 
