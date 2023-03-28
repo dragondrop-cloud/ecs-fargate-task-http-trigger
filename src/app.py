@@ -1,16 +1,12 @@
 import os
 import boto3
 from typing import List
-from ast import literal_eval
 
 
 def handler(event, _):
     """Handle lambda event and trigger the execution of the Fargate task."""
     try:
         print(f"Event:\n{event}\n")
-        event_dict = literal_eval(event)
-        print(f"Event evaluated:\n{event_dict}")
-        print(f"Event body:\n{event_dict['body']}")
 
         session = boto3.Session()
 
