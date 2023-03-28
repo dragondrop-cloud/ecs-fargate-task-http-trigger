@@ -1,17 +1,22 @@
 import os
 import boto3
 from typing import List
+from ast import literal_eval
 
 
-def handler(event, context):
+def handler(event, _):
     """Handle lambda event and trigger the execution of the Fargate task."""
     try:
-        print(f"Event:\n{event}\nContext:\n{context}")
+        print(f"Event:\n{event}\n")
+        event_dict = literal_eval(event)
+        print(f"Event evaluated:\n{event_dict}")
+        print(f"Event body:\n{event_dict['body']}")
+
         session = boto3.Session()
 
         client = session.client('ecs')
 
-        env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(event=event)
+        env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(event=event["body"])
 
         print(
             f"Environment variable override:\n{env_override_list_of_dicts}\n"
