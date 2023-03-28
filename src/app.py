@@ -3,9 +3,10 @@ import boto3
 from typing import List
 
 
-def handler(event, _):
+def handler(event, context):
     """Handle lambda event and trigger the execution of the Fargate task."""
     try:
+        print(f"Event:\n{event}\nContext:\n{context}")
         session = boto3.Session()
 
         client = session.client('ecs')
