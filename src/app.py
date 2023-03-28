@@ -10,8 +10,8 @@ import boto3
 def handler(event, _):
     """Handle lambda event and trigger the execution of the Fargate task."""
     try:
-        print(f"Event:\n{event}\n")
-        parsed_event = _parse_event_body_to_dict(event=event)
+        print(f"Event:\n{event}\nEvent Type:\n{type(event)}\n")
+        parsed_event = _parse_event_body_to_dict(event=str(event))
         print(f"Parsed Event:\n{parsed_event}\n")
 
         session = boto3.Session()
@@ -50,9 +50,13 @@ def handler(event, _):
         print(f"Response from ECS invocation:\n{response}\n")
         return {"statusCode": 201, "body": json.dumps(f"Success!")}
     except Exception as e:
-        traceback.format_exc()
-        print(f"Exception: {e}")
-        return {"statusCode": 500, "body": json.dumps(f"Internal error: {e}\n{traceback.format_exc()}")}
+        stack_trace = traceback.format_exc()
+
+        print(f"Exception:{e}\n{stack_trace}")
+        return {
+            "statusCode": 500,
+            "body": json.dumps(f"Internal error: {e}\n{stack_trace}"),
+        }
 
 
 def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
