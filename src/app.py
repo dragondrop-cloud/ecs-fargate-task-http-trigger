@@ -1,18 +1,22 @@
 import os
-import boto3
+import re
+from ast import literal_eval
 from typing import List
+import boto3
 
 
 def handler(event, _):
     """Handle lambda event and trigger the execution of the Fargate task."""
     try:
         print(f"Event:\n{event}\n")
+        parsed_event = _parse_event_body_to_dict(event=event)
+        print(f"Parsed Event:\n{parsed_event}\n")
 
         session = boto3.Session()
 
         client = session.client('ecs')
 
-        env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(event=event["body"])
+        env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(event=parsed_event)
 
         print(
             f"Environment variable override:\n{env_override_list_of_dicts}\n"
@@ -86,3 +90,18 @@ def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
             )
 
     return output_list_of_dicts
+
+
+def _parse_event_body_to_dict(event: str) -> dict:
+    """Parse event string for the "body" and return as a dictionary"""
+    result = re.search(
+        "'body': '({.*})',",
+        event
+    )
+
+    group_1 = result.group(1)
+    cleaned_group_1 = group_1.replace('\\"', '"')
+    cleaned_group_2 = cleaned_group_1.replace('"{', "{").replace('}"', "}")
+    cleaned_group_3 = cleaned_group_2.replace("null", "None").replace("true", "True").replace("false", "False")
+
+    return literal_eval(cleaned_group_3)
