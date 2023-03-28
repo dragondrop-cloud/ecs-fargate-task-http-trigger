@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from ast import literal_eval
@@ -14,42 +15,42 @@ def handler(event, _):
 
         session = boto3.Session()
 
-        client = session.client('ecs')
+        client = session.client("ecs")
 
-        env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(event=parsed_event)
-
-        print(
-            f"Environment variable override:\n{env_override_list_of_dicts}\n"
+        env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(
+            event=parsed_event
         )
+
+        print(f"Environment variable override:\n{env_override_list_of_dicts}\n")
 
         response = client.run_task(
             cluster=os.getenv("ECS_CLUSTER_ARN"),
             networkConfiguration={
-                'awsvpcConfiguration': {
-                    'subnets': [
-                        os.getenv("SUBNET")
-                    ],
-                    'securityGroups': [
+                "awsvpcConfiguration": {
+                    "subnets": [os.getenv("SUBNET")],
+                    "securityGroups": [
                         os.getenv("SECURITY_GROUP"),
                     ],
-                    'assignPublicIp': 'ENABLED'
+                    "assignPublicIp": "ENABLED",
                 }
             },
             startedBy="dragondrop-lambda-https-trigger",
             taskDefinition=os.getenv("TASK_DEFINITION"),
             overrides={
-                'containerOverrides': [
+                "containerOverrides": [
                     {
                         "name": os.getenv("CONTAINER_NAME"),
-                        'environment': env_override_list_of_dicts,
+                        "environment": env_override_list_of_dicts,
                     },
                 ],
             },
         )
 
         print(f"Response from ECS invocation:\n{response}\n")
+        return {"statusCode": 201, "body": json.dumps(f"Success!")}
     except Exception as e:
         print(f"Exception: {e}")
+        return {"statusCode": 500, "body": json.dumps(f"Internal error: {e}!")}
 
 
 def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
@@ -71,7 +72,7 @@ def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
         "resource_white_list": "RESOURCEWHITELIST",
         "resource_black_list": "RESOURCEBLACKLIST",
         "is_module_mode": "ISMODULEMODE",
-     }
+    }
 
     output_list_of_dicts = [
         {
@@ -85,7 +86,7 @@ def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
             output_list_of_dicts.append(
                 {
                     "name": f"DRAGONDROP_{request_var_to_env_var[request_var]}",
-                    "value": f"{event[request_var]}"
+                    "value": f"{event[request_var]}",
                 }
             )
 
@@ -94,14 +95,15 @@ def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
 
 def _parse_event_body_to_dict(event: str) -> dict:
     """Parse event string for the "body" and return as a dictionary"""
-    result = re.search(
-        "'body': '({.*})',",
-        event
-    )
+    result = re.search("'body': '({.*})',", event)
 
     group_1 = result.group(1)
     cleaned_group_1 = group_1.replace('\\"', '"')
     cleaned_group_2 = cleaned_group_1.replace('"{', "{").replace('}"', "}")
-    cleaned_group_3 = cleaned_group_2.replace("null", "None").replace("true", "True").replace("false", "False")
+    cleaned_group_3 = (
+        cleaned_group_2.replace("null", "None")
+        .replace("true", "True")
+        .replace("false", "False")
+    )
 
     return literal_eval(cleaned_group_3)
