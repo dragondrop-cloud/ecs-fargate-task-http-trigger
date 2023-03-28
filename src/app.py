@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import traceback
 from ast import literal_eval
 from typing import List
 import boto3
@@ -49,8 +50,9 @@ def handler(event, _):
         print(f"Response from ECS invocation:\n{response}\n")
         return {"statusCode": 201, "body": json.dumps(f"Success!")}
     except Exception as e:
+        traceback.format_exc()
         print(f"Exception: {e}")
-        return {"statusCode": 500, "body": json.dumps(f"Internal error: {e}!")}
+        return {"statusCode": 500, "body": json.dumps(f"Internal error: {e}\n{traceback.format_exc()}")}
 
 
 def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
