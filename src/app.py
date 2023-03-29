@@ -64,20 +64,20 @@ def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
     Helper function to generate the right dict of environment variable overrides.
     """
     request_var_to_env_var = {
+        "is_module_mode": "ISMODULEMODE",
         "migration_history_storage": "MIGRATIONHISTORYSTORAGE",
-        "terraform_providers": "PROVIDERS",
-        "terraform_version": "TERRAFORMVERSION",
-        "vcs_user": "VCSUSER",
-        "vcs_repo": "VCSREPO",
-        "vcs_system": "VCSSYSTEM",
-        "vcs_base_branch": "VCSBASEBRANCH",
-        "state_backend": "STATEBACKEND",
-        "terraform_cloud_organization": "TERRAFORMCLOUDORGANIZATION",
-        "s3_backend_bucket": "S3BACKENDBUCKET",
-        "reviewers": "PULLREVIEWERS",
+        "provider_versions": "PROVIDERS",
         "resource_white_list": "RESOURCEWHITELIST",
         "resource_black_list": "RESOURCEBLACKLIST",
-        "is_module_mode": "ISMODULEMODE",
+        "reviewers": "PULLREVIEWERS",
+        "s3_bucket_name": "S3BACKENDBUCKET",
+        "state_backend": "STATEBACKEND",
+        "terraform_cloud_organization_name": "TERRAFORMCLOUDORGANIZATION",
+        "terraform_version": "TERRAFORMVERSION",
+        "vcs_system": "VCSSYSTEM",
+        "vcs_repo_name": "VCSREPO",
+        "vcs_user": "VCSUSER",
+        "vcs_base_branch": "VCSBASEBRANCH",
     }
 
     output_list_of_dicts = [
