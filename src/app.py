@@ -14,11 +14,13 @@ def handler(event, _):
         client = session.client("ecs")
 
         print(event["body"])
-
-        env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(
-            event_body=literal_eval(event["body"])
+        event_body = json.loads(
+            event["body"].replace('"[', "[").replace(']"', "]").replace('"{', "{").replace('}"', "}")
         )
 
+        env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(
+            event_body=event_body
+        )
         print(f"Environment variable override:\n{env_override_list_of_dicts}\n")
 
         response = client.run_task(
