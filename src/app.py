@@ -1,7 +1,6 @@
 import json
 import os
 import traceback
-from ast import literal_eval
 from typing import List
 import boto3
 
@@ -15,15 +14,8 @@ def handler(event, _):
 
         event_body = event["body"]
         print(event_body)
-        formatted_event_body = (
-            event_body.replace('"[', "[")
-            .replace(']"', "]")
-            .replace('"{', "{")
-            .replace('}"', "}")
-        )
-        print(f"Formatted event body:\n{formatted_event_body}\n")
 
-        event_body = json.loads(formatted_event_body)
+        event_body = json.loads(event_body)
 
         env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(
             event_body=event_body
