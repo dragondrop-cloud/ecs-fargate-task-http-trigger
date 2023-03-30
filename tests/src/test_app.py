@@ -21,12 +21,12 @@ def test_generate_update_env_vars_dict():
             "value": "example",
         },
         {
-            "name": "DRAGONDROP_VCSSYSTEM",
-            "value": "github",
-        },
-        {
             "name": "DRAGONDROP_ISMODULEMODE",
             "value": "false",
+        },
+        {
+            "name": "DRAGONDROP_VCSSYSTEM",
+            "value": "github",
         },
     ]
 
