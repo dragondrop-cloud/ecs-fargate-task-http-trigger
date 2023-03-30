@@ -1,5 +1,2 @@
 # Match the AWS SDK Passed to Lambda Python Runtimes of 3.9
 boto3==1.20.32
-# Requirements just for testing
-pytest==7.1.1
-pytest-cov==3.0.0
