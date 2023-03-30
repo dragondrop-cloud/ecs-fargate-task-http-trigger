@@ -1,6 +1,5 @@
 import json
 import os
-import re
 import traceback
 from ast import literal_eval
 from typing import List
@@ -15,7 +14,7 @@ def handler(event, _):
         client = session.client("ecs")
 
         env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(
-            event_body=event["body"]
+            event_body=literal_eval(event["body"])
         )
 
         print(f"Environment variable override:\n{env_override_list_of_dicts}\n")
