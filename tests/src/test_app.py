@@ -31,5 +31,6 @@ def test_generate_update_env_vars_dict():
     ]
 
     case.assertListEqual(
-        expected_output_dict, _generate_update_env_vars_list_of_dicts(event_body=input_dict)
+        expected_output_dict,
+        _generate_update_env_vars_list_of_dicts(event_body=input_dict),
     )

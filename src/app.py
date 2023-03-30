@@ -13,10 +13,17 @@ def handler(event, _):
 
         client = session.client("ecs")
 
-        print(event["body"])
-        event_body = json.loads(
-            event["body"].replace('"[', "[").replace(']"', "]").replace('"{', "{").replace('}"', "}")
+        event_body = event["body"]
+        print(event_body)
+        formatted_event_body = (
+            event_body.replace('"[', "[")
+            .replace(']"', "]")
+            .replace('"{', "{")
+            .replace('}"', "}")
         )
+        print(f"Formatted event body:\n{formatted_event_body}\n")
+
+        event_body = json.loads(formatted_event_body)
 
         env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(
             event_body=event_body
