@@ -10,17 +10,12 @@ import boto3
 def handler(event, _):
     """Handle lambda event and trigger the execution of the Fargate task."""
     try:
-        print(f"Event:\n{event}\nEvent Type:\n{type(event)}\n")
-        print(f"Event:\n{event['body']}\n")
-        parsed_event = _parse_event_body_to_dict(event=str(event))
-        print(f"Parsed Event:\n{parsed_event}\n")
-
         session = boto3.Session()
 
         client = session.client("ecs")
 
         env_override_list_of_dicts = _generate_update_env_vars_list_of_dicts(
-            event=parsed_event
+            event_body=event["body"]
         )
 
         print(f"Environment variable override:\n{env_override_list_of_dicts}\n")
@@ -60,7 +55,7 @@ def handler(event, _):
         }
 
 
-def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
+def _generate_update_env_vars_list_of_dicts(event_body: dict) -> List[dict]:
     """
     Helper function to generate the right dict of environment variable overrides.
     """
@@ -84,33 +79,17 @@ def _generate_update_env_vars_list_of_dicts(event: dict) -> List[dict]:
     output_list_of_dicts = [
         {
             "name": "DRAGONDROP_JOBID",
-            "value": event["job_run_id"],
+            "value": event_body["job_run_id"],
         }
     ]
 
     for request_var in request_var_to_env_var.keys():
-        if request_var in event:
+        if request_var in event_body:
             output_list_of_dicts.append(
                 {
                     "name": f"DRAGONDROP_{request_var_to_env_var[request_var]}",
-                    "value": f"{event[request_var]}",
+                    "value": f"{event_body[request_var]}",
                 }
             )
 
     return output_list_of_dicts
-
-
-def _parse_event_body_to_dict(event: str) -> dict:
-    """Parse event string for the "body" and return as a dictionary"""
-    result = re.search("'body': '({.*})',", event)
-
-    group_1 = result.group(1)
-    cleaned_group_1 = group_1.replace('\\"', '"')
-    cleaned_group_2 = cleaned_group_1.replace('"{', "{").replace('}"', "}")
-    cleaned_group_3 = (
-        cleaned_group_2.replace("null", "None")
-        .replace("true", "True")
-        .replace("false", "False")
-    )
-
-    return literal_eval(cleaned_group_3)
