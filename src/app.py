@@ -11,6 +11,7 @@ def handler(event, _):
     """Handle lambda event and trigger the execution of the Fargate task."""
     try:
         print(f"Event:\n{event}\nEvent Type:\n{type(event)}\n")
+        print(f"Event:\n{event['body']}\n")
         parsed_event = _parse_event_body_to_dict(event=str(event))
         print(f"Parsed Event:\n{parsed_event}\n")
 
