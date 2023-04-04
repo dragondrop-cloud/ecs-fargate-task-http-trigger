@@ -1,14 +1,12 @@
-name: driftmitigation engine continuous deployment (CD)
+name: http trigger continuous deployment (CD)
 on:
   push:
     branches:
       - dev
       - prod
-    paths:
-       - src/**
 
 jobs:
-  zip-tf-modules-and-send-to-s3:
+  zip-lambda-and-send-to-s3:
     runs-on: ubuntu-latest
     container: python:3.10.1-slim-buster
     timeout-minutes: 3
