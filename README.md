@@ -18,7 +18,7 @@ also creates a Containerized Lambda that hosts the container created by this rep
 
 The repository that defines this module can be found [here](https://github.com/dragondrop-cloud/terraform-aws-dragondrop-compute).
 
-## Pulling the latest version of this REPO's code:
+## Pulling the latest version of this REPO's code into your Lambda:
 Upload code to the lambda from the s3 reference URL:
 `https://dragondrop-ecs-fargate-task-lambda-trigger-prod.s3.amazonaws.com/dragondrop_https_trigger_lambda.zip`
 
