@@ -61,12 +61,7 @@ def _generate_update_env_vars_list_of_dicts(event_body: dict) -> List[dict]:
     """
     Helper function to generate the right dict of environment variable overrides.
     """
-    output_list_of_dicts = [
-        {
-            "name": "DRAGONDROP_JOBID",
-            "value": event_body["job_run_id"],
-        }
-    ]
+    output_list_of_dicts = []
 
     for key, value in event_body.items():
         output_list_of_dicts.append(
