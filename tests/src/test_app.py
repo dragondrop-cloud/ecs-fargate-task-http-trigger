@@ -10,9 +10,9 @@ def test_generate_update_env_vars_dict():
     case = TestCase()
 
     input_dict = {
-        "job_run_id": "example",
-        "vcs_system": "github",
-        "is_module_mode": "false",
+        "DRAGONDROP_JOBID": "example",
+        "DRAGONDROP_ISMODULEMODE": "false",
+        "DRAGONDROP_VCSSYSTEM": "github",
     }
 
     expected_output_dict = [
