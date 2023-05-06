@@ -61,23 +61,6 @@ def _generate_update_env_vars_list_of_dicts(event_body: dict) -> List[dict]:
     """
     Helper function to generate the right dict of environment variable overrides.
     """
-    request_var_to_env_var = {
-        "is_module_mode": "ISMODULEMODE",
-        "migration_history_storage": "MIGRATIONHISTORYSTORAGE",
-        "provider_versions": "PROVIDERS",
-        "resource_white_list": "RESOURCESWHITELIST",
-        "resource_black_list": "RESOURCESBLACKLIST",
-        "reviewers": "PULLREVIEWERS",
-        "s3_bucket_name": "S3BACKENDBUCKET",
-        "state_backend": "STATEBACKEND",
-        "terraform_cloud_organization_name": "TERRAFORMCLOUDORGANIZATION",
-        "terraform_version": "TERRAFORMVERSION",
-        "vcs_system": "VCSSYSTEM",
-        "vcs_repo_name": "VCSREPO",
-        "vcs_user": "VCSUSER",
-        "vcs_base_branch": "VCSBASEBRANCH",
-    }
-
     output_list_of_dicts = [
         {
             "name": "DRAGONDROP_JOBID",
@@ -85,13 +68,12 @@ def _generate_update_env_vars_list_of_dicts(event_body: dict) -> List[dict]:
         }
     ]
 
-    for request_var in request_var_to_env_var.keys():
-        if request_var in event_body:
-            output_list_of_dicts.append(
-                {
-                    "name": f"DRAGONDROP_{request_var_to_env_var[request_var]}",
-                    "value": f"{event_body[request_var]}",
-                }
-            )
+    for key, value in event_body.items():
+        output_list_of_dicts.append(
+            {
+                "name": key,
+                "value": value,
+            }
+        )
 
     return output_list_of_dicts
