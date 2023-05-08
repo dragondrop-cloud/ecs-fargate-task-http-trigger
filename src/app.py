@@ -67,7 +67,7 @@ def _generate_update_env_vars_list_of_dicts(event_body: dict) -> List[dict]:
         output_list_of_dicts.append(
             {
                 "name": key,
-                "value": value,
+                "value": str(value),
             }
         )
 
